@@ -14,16 +14,22 @@ let questionBtn = document.getElementById('questionBtn');
 let answerBtn = document.getElementById('answerBtn');
 let feedbackDiv  = document.getElementById('feedback');
 let scoreDiv  = document.getElementById('score');
-let currentQuestion = null;
-let tries = 0;
-let score  = 0;
+let playerDiv = document.getElementById('player');
 
-scoreDiv.textContent = `You scored ${score} out of ${tries} tries.`;
+
+let currentQuestion = null;
+let currentPlayer = 1;
+let scores = { 1: 0, 2: 0 };
+let tries = { 1: 0, 2: 0 };
+let usedQuestions = [];
+
+updateScoreDisplay();
 
 questionBtn.addEventListener('click', () => {
     getTriviaQuestion()
     .then((question) => {
         currentQuestion = question;
+        console.log(currentQuestion);
         displayQuestion(question);
     })
     .catch((error)=> {
@@ -32,40 +38,58 @@ questionBtn.addEventListener('click', () => {
 })
 
 answerBtn.addEventListener('click', () => {
-   tries ++;
-    if ( answerDiv.value.trim().toLowerCase() === currentQuestion.answer.toLowerCase()){
-        score ++;
-        feedbackDiv.style.color = 'green';        
-        feedbackDiv.textContent = 'You are Correct.';
-        scoreDiv.textContent = `You scored ${score} out of ${tries} tries.`;
-    }else {
-        feedbackDiv.style.color = 'red'; 
-        feedbackDiv.textContent = `You are not Correct. the answer is ${currentQuestion.answer}.`;
-        scoreDiv.textContent = `You scored ${score} out of ${tries} tries.`;
-    }
-})
+    if (!currentQuestion) return;
 
-function getTriviaQuestion(){
+    tries[currentPlayer]++;
+    const userAnswer = answerDiv.value.trim().toLowerCase();
+    const correctAnswer = currentQuestion.answer.toLowerCase();
+
+    if (userAnswer === correctAnswer) {
+        scores[currentPlayer]++;
+        feedbackDiv.style.color = 'green';
+        feedbackDiv.textContent = `Correct, Player ${currentPlayer}!`;
+    } else {
+        feedbackDiv.style.color = 'red';
+        feedbackDiv.textContent = `Incorrect, Player ${currentPlayer}. The answer was "${currentQuestion.answer}".`;
+    }
+
+    updateScoreDisplay();
+    switchPlayer();
+    currentQuestion = null;
+});
+
+function getTriviaQuestion() {
     return new Promise((resolve, reject) => {
-        setTimeout(()=> {
-           const index = Math.floor(Math.random() * questions.length);
-           const question = questions[index];
-           console.log(question);
-           if (index > questions.length) {
-                reject('An error occurred while fetching the trivia question.');
-            } else {
-                    resolve(question);
+        setTimeout(() => {
+            if (usedQuestions.length === questions.length) {
+                reject('All questions have been used!');
+                return;
             }
-            },1000);        
+
+            let index;
+            do {
+                index = Math.floor(Math.random() * questions.length);
+            } while (usedQuestions.includes(index));
+
+            usedQuestions.push(index);
+            resolve(questions[index]);
+        }, 1000);
     });
 }
 
-function displayQuestion(triviaQuestion){
+
+function displayQuestion(triviaQuestion) {
     questionDiv.textContent = triviaQuestion.question;
     answerDiv.value = '';
     feedbackDiv.textContent = '';
 }
 
-function scoreKeeping(){
+function updateScoreDisplay() {
+    scoreDiv.textContent = `Player 1: ${scores[1]} out of ${tries[1]} tries | Player 2: ${scores[2]} out of ${tries[2]} tries.`;
+    playerDiv.textContent = `Current Turn: Player ${currentPlayer}`;
+}
 
+function switchPlayer() {
+    currentPlayer = currentPlayer === 1 ? 2 : 1;
+    updateScoreDisplay();
 }
