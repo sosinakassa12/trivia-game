@@ -6,13 +6,19 @@
     <title>Trivia Game</title>
 </head>
 <body>
-    <h1>Trivia Game</h1>
-    <div id="question">Click "New Question" to start the game</div>
-    <input id="answer" type="text" placeholder="Your answer here">
-    <button id="questionBtn">New Question</button>
-    <button id="answerBtn">Submit Answer</button>
-    <div id="feedback"></div>
-    <div id="score"></div>
+   <h1 style="text-align:center; color:#333; font-family:sans-serif;">Trivia Game</h1>
+<div id="question" style="margin: 20px auto; padding: 15px; max-width: 400px; background-color: #f2f2f2; border-radius: 8px; text-align:center;">
+  Click "New Question" to start the game
+</div>
+<input id="answer" type="text" placeholder="Your answer here" style="display:block; margin: 10px auto; padding: 10px; width: 80%; max-width: 300px; border: 1px solid #ccc; border-radius: 4px;">
+<button id="questionBtn" style="margin: 10px auto; display:block; padding: 10px 20px; background-color: #007bff; color:white; border:none; border-radius:5px; cursor:pointer;">
+  New Question
+</button>
+<button id="answerBtn" style="margin: 10px auto; display:block; padding: 10px 20px; background-color: #28a745; color:white; border:none; border-radius:5px; cursor:pointer;">
+  Submit Answer
+</button>
+<div id="feedback" style="margin-top: 15px; text-align:center; font-weight:bold; color:#444;"></div>
+<div id="score" style="margin-top: 10px; text-align:center; color:#555;"></div>
     <script src="questions.js"></script> <!-- Link to your JSON data -->
     <script src="trivia.js"></script> <!-- Link to your JS file -->
 </body>
