@@ -8,14 +8,17 @@
 // - Compare it to the correct answer
 // - If it's right, show "Correct!"
 // - If it's wrong, show "Try again"
-
-
 let questionDiv = document.getElementById('question');
 let answerDiv  = document.getElementById('answer');
 let questionBtn = document.getElementById('questionBtn');
 let answerBtn = document.getElementById('answerBtn');
 let feedbackDiv  = document.getElementById('feedback');
+let scoreDiv  = document.getElementById('score');
 let currentQuestion = null;
+let tries = 0;
+let score  = 0;
+
+scoreDiv.textContent = `You scored ${score} out of ${tries} tries.`;
 
 questionBtn.addEventListener('click', () => {
     getTriviaQuestion()
@@ -28,11 +31,26 @@ questionBtn.addEventListener('click', () => {
     })
 })
 
+answerBtn.addEventListener('click', () => {
+   tries ++;
+    if ( answerDiv.value.trim().toLowerCase() === currentQuestion.answer.toLowerCase()){
+        score ++;
+        feedbackDiv.style.color = 'green';        
+        feedbackDiv.textContent = 'You are Correct.';
+        scoreDiv.textContent = `You scored ${score} out of ${tries} tries.`;
+    }else {
+        feedbackDiv.style.color = 'red'; 
+        feedbackDiv.textContent = `You are not Correct. the answer is ${currentQuestion.answer}.`;
+        scoreDiv.textContent = `You scored ${score} out of ${tries} tries.`;
+    }
+})
+
 function getTriviaQuestion(){
     return new Promise((resolve, reject) => {
         setTimeout(()=> {
            const index = Math.floor(Math.random() * questions.length);
            const question = questions[index];
+           console.log(question);
            if (index > questions.length) {
                 reject('An error occurred while fetching the trivia question.');
             } else {
@@ -42,8 +60,12 @@ function getTriviaQuestion(){
     });
 }
 
-function displayQuestion(triviaQuestion ){
-    questionDiv.textContent(triviaQuestion.question);
-    answerDiv.value('');
-    feedbackDiv.textContent('');
+function displayQuestion(triviaQuestion){
+    questionDiv.textContent = triviaQuestion.question;
+    answerDiv.value = '';
+    feedbackDiv.textContent = '';
+}
+
+function scoreKeeping(){
+
 }
